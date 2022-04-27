@@ -16,6 +16,8 @@ from datetime import datetime
 
 class API_Data:
     
+    dir='/home/loum/Api_Data_collection/raw_data/'
+    
 
     def  __init__(self):
         self.api_key=os.getenv('API_KEY')
