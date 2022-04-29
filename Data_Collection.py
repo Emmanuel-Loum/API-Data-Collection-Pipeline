@@ -24,6 +24,7 @@ class API_Data:
         self.url="https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest"
         self.parameters= {'start':'1','limit':'5000','convert':'USD'           }
         self.headers={ 'Accepts':'application/json', 'X-CMC_PRO_API_KEY':self.api_key}
+        self.session=Session()
         global datapoint
     
         
@@ -36,30 +37,25 @@ class API_Data:
         start_time = time.time()
         
 
-        session=Session()
-        session.headers.update(self.headers)
+       
+        self.session.headers.update(self.headers)
 
         try:
-            response=session.get(self.url,params=self.parameters)
+            response=self.session.get(self.url,params=self.parameters)
             data=json.loads(response.text) 
             
             clause=False
+
             '''
-
             Makes datapoint a global variable
-
             '''
             global datapoint
             datapoint=defaultdict(int)
 
-            for i in range(-1,(len(data['data'][0:])-1)): 
-                i+=1 
+            for i in range(1): 
                 '''
-                creates a unique id for every datapoint
                 Adds data to a dictionary
                 '''
-                id=uuid.uuid4()
-
                 datapoint=data['data'][0:]    
                 clause=True
         
@@ -68,11 +64,10 @@ class API_Data:
                 path='/home/loum/Api_Data_collection/raw_data'
                 os.chdir(path)
                 '''
-                makes a unique id using date and time
-                '''
+                To make a unique id using date and time
                 #timestr=datetime.now().strftime("%Y%m%d%H%M%S%")
-                '''
-                Create a global variable for the uniqueid
+                
+                Creates a global variable for the uniqueid
                 '''
                 global uniqueid
                 uniqueid=id
@@ -131,7 +126,7 @@ class API_Data:
         x_list.sort()
         csn=",".join(map(str, x_list))
         k=csn[:4000]
-        new_list=k.split(",")
+        csn_list=k.split(",")
 
         '''
         Different API url to request images
@@ -158,7 +153,7 @@ class API_Data:
             Extracts the image urls and puts them in list2
             '''
             list2=[]
-            for  i in new_list:
+            for  i in csn_list:
                 #i=str(i) -> i should a string
                 x=data['data'][i]['logo']
                 list2.append(x)

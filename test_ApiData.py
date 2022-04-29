@@ -2,14 +2,13 @@ from collections import Counter
 import unittest
 from urllib import response
 from requests import Request,Session
-import DCP
-#supposed DCP2
+import Data_Collection
+import tracemalloc
 from Data_Collection import API_Data
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import warnings
 import json
 import os
-#warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
 
 class APITestCase(unittest.TestCase):
 
@@ -36,22 +35,22 @@ class APITestCase(unittest.TestCase):
         self.assertTrue(datapoint,self.id)
     
     def test_file(self):
-        for self.i,self.ig in enumerate(os.listdir(self.api.dir)): 
-            if self.i ==0:
+        for i,ig in enumerate(os.listdir(self.api.dir)): 
+            if i ==0:
                 
-                self.handle=open(self.dir+str(self.ig)+'/data.json','r')
+                with open(self.dir+str(ig)+'/data.json','r') as handle_file:
             
-                length=len(self.handle.read())
-                self.assertTrue(length>2)
+                    length=len(handle_file.read())
+                    self.assertTrue(length>2)
 
     def tearDown(self):
-        self.api.session.close
-        self.handle.close()
-        warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
+        self.api.session.close()
+        
+        #warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
 
     def test_image_retriever(self):
-        for self.i,self.ig in enumerate(os.listdir(self.api.dir)):
-            if self.i ==0:
-                self.new_dir=os.chdir(self.dir+str(self.ig)+'/Images/')
+        for i,ig in enumerate(os.listdir(self.api.dir)):
+            if i ==0:
+                self.new_dir=os.chdir(self.dir+str(ig)+'/Images/')
                 count_ig=Counter(os.listdir(self.new_dir))
                 self.assertTrue(len(count_ig)>30)
