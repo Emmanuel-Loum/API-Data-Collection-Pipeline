@@ -5,10 +5,11 @@ import os
 import boto3
 import warnings
 import json
+from sqlalchemy import create_engine
 
 
 class APITestCase(unittest.TestCase):
-    os.chdir('/home/loum/Api_Data_collection/raw_data/') # change to your dir
+    # os.chdir('/raw_data/') # change to your dir
     
     def setUp(self):
         self.api = API_Data()
@@ -42,8 +43,8 @@ class APITestCase(unittest.TestCase):
         self.api.session.close()
          
         warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
-        # boto3 connection will still be running
-        # for a few  minutes then closes automatically
+        # boto3 connection will still be running but
+        # after a few  minutes it will closes automatically
 
     def test_image_retriever(self):
         for root, dir, file in os.walk(os.getcwd()):
@@ -52,19 +53,26 @@ class APITestCase(unittest.TestCase):
                 self.assertTrue(count1 > 30)
      
     def test_s3_upload(self):
-        os.chdir('/home/loum/Api_Data_collection') # change to your dir
+        
         s3 = boto3.client('s3')
-        iname = 'BTC.png'
-        # Of course, change the names of the files to match your own.
-        s3.download_file('forthbucket', '08f2166f-819a-4b49-8d93-b5c2988470c5/Images/1.png', f'{iname}')
-        if iname in os.listdir(os.getcwd()):
-            iexist = True
-        else:
-            iexist = False
-        self.assertTrue(iexist)
+        iname = '1.png'
+        bucket = 'forthbucket'
+        # To get the folder name in s3 type:
+        result = s3.list_objects(Bucket=bucket, Delimiter='/')
+        for o in result.get('CommonPrefixes'):
+            folder_name = o.get('Prefix')
+            # Of course, change the names of the files to match your own.
+            # To download object from s3
+            s3.download_file(bucket, f'{folder_name}', f'{iname}')
+            # image download in your dir and checks if it exists
+            if iname in os.listdir(os.getcwd()):
+                iexist = True
+            else:
+                iexist = False
+            self.assertTrue(iexist)
     
     def test_RDS_Connection(self):
-        from sqlalchemy import create_engine
+
         DATABASE_TYPE = 'postgresql'
         DBAPI = 'psycopg2'
         # Change it for your AWS endpoint
@@ -81,3 +89,4 @@ class APITestCase(unittest.TestCase):
         except(ConnectionError, Timeout, TooManyRedirects) as e:
             print(e)
 
+unittest.main(argv=[''], verbosity=0, exit=False)

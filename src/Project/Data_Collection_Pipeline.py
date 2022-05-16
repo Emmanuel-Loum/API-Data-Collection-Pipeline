@@ -15,10 +15,12 @@ load_dotenv()
 
 
 class API_Data:
-    dir = '/home/loum/Api_Data_collection/raw_data/'
+    dir = os.getcwd()
 
     def __init__(self):
         self.api_key = os.getenv('API_KEY')
+        self.access_key = os.getenv('AWS_ACCESS_KEY_ID')
+        self.secret_key = os.getenv('AWS_SECRET_ACCESS_KEY')
         self.url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest"
         self.parameters = {'start': '1', 'limit': '5000', 'convert': 'USD'}
         self.headers = {'Accepts': 'application/json',
@@ -27,22 +29,27 @@ class API_Data:
         global datapoint
 
     def retriever(self):
+
         '''
         Method that makes an api call to a website and extracts data
         and stores in a folder that it creates
         '''
-        start_time = time.time() 
-
+        if os.path.isdir('raw_data'):
+            pass
+        else:
+            os.makedirs('raw_data')   
+        start_time = time.time()
         self.session.headers.update(self.headers)
 
         try:
+
             response = self.session.get(self.url, params=self.parameters)
-            data = json.loads(response.text)  
+            data = json.loads(response.text)
             clause = False
             global datapoint  # Makes datapoint a global variable
             datapoint = defaultdict(int)
             for i in tqdm(range(-1, (len(data['data'][0:])-1))):
-                ''' 
+                '''
                 Function that creates a unique id for every datapoint
                 Adds data to a dictionary
                 '''
@@ -52,7 +59,7 @@ class API_Data:
 
             if clause is True:
 
-                path = '/home/loum/Api_Data_collection/raw_data'
+                path = 'raw_data'
                 os.chdir(path)
                 # To make a unique id using date and time 
                 # timestr=datetime.now().strftime("%Y%m%d%H%M%S%")
@@ -64,21 +71,22 @@ class API_Data:
                 '''
                 newfolder = f'{uniqueid}'
                 os.makedirs(newfolder)
-                with open(f'/home/loum/Api_Data_collection/raw_data/{uniqueid}/data.json', 'w') as newjfile:
+                with open(f'{uniqueid}/data.json', 'w') as newjfile:
                     json.dump(datapoint, newjfile)
                 clause = False
 
         except(ConnectionError, Timeout, TooManyRedirects) as e:
+
             print(e)
         # To measure time complexity 
-        print(f"Retrieveed data in --- {(time.time()- start_time):.08f} seconds ---")
-    
+        print(f"Retrieved data in --- {(time.time()- start_time):.08f} seconds ---")
+
     def image_retriever(self):
 
         '''
-        Function that retrieves images but uses a different url 
+        Function that retrieves images but uses a different url
         from the same website, uses datapoint from retriever method
-        and changes a list to a comma separated numeric to be used 
+        and changes a list to a comma separated numeric to be used
         at the id parameter as required by the website
         '''
         x_list = []
@@ -124,43 +132,45 @@ class API_Data:
         Uses unique id from retriever method to store the images 
         to the same unique id folder with the same datapoint
         '''
-        mfdr = f"/home/loum/Api_Data_collection/raw_data/{uniqueid}/"
+        mfdr = f"{uniqueid}"
         os.chdir(mfdr)
         os.makedirs('Images')
-        fdr = f"/home/loum/Api_Data_collection/raw_data/{uniqueid}/Images/"
+        fdr = "Images/"
         list2 = dict.fromkeys(list2)  # removes duplicate images from list 
         num = 0
         for url in (list2): 
             urlretrieve(url, fdr+os.path.basename(url))
             num += 1  # counts the number of images being downloaded
         # To measure time compleity 
-        print(f"Image downloaded in \t - {(time.time() - start_time):.08f} secs-")
+        print(f"Image downloaded in --- {(time.time() - start_time):.08f} seconds-")
         print(num)
 
     def upload_to_s3(self):
         '''
         Method to upload data to aws s3 for storage
         '''
+        boto3.Session(
+        aws_access_key_id= self.access_key,
+        aws_secret_access_key  = self.secret_key) # AWS credentials
         start_time = time.time()
         s3_client = boto3.client('s3')
         s3 = boto3.resource('s3')
-        path_dir = "/home/loum/Api_Data_collection/raw_data/"
-        for a in os.listdir(path_dir): 
-            bucket_name = "forthbucket"
-            directory_name = f"{a}"  # it's name of your folders
-            s3_client.put_object(Bucket=bucket_name, Key=(directory_name+'/'))
-            os.chdir(f"{path_dir}{a}/")  # creates the uuid folder in s3
-            print('--- uploading data ----')
-            s3.Bucket(bucket_name).upload_file('data.json', f"{a}/data.json")  
-            # sends the data into the uuid folder 
-            s3_client.put_object(Bucket=bucket_name, Key=('Images/'))  
-            # creates image folder in the uuid folder
-            images = f"{path_dir}{a}/Images/"
+        #path_dir = "/raw_data/"
+        path_dir = f"{os.getcwd()}/"
+        bucket_name = "forthbucket"  
+        s3_client.put_object(Bucket=bucket_name, Key=(f"{uniqueid}/"))
+        os.chdir(f"{path_dir}/")
+        print('uploading data...')
+        s3.Bucket(bucket_name).upload_file('data.json', f"{uniqueid}/data.json")  
+        # sends the data into the uuid folder
+        # s3_client.put_object(Bucket=bucket_name, Key=('Images/'))  
+        # creates image folder in the uuid folder
+        images = f"{path_dir}/Images/"
+        print('uploading images...')
         for i in os.listdir(images):  # sends every image to s3
             os.chdir(images)
-            print('--- uploading images ---')
-            s3.Bucket(bucket_name).upload_file(f'{i}', f"{a}/Images/{i}")
-        print(f"Recursive Fibonacci\t ---{(time.time() - start_time):.08f} seconds ---")
+            s3.Bucket(bucket_name).upload_file(f'{i}', f"{uniqueid}/Images/{i}")
+        print(f"Uploaded in ---{(time.time() - start_time):.08f} seconds ---")
 
     def send_tabular(self):
         '''
@@ -178,20 +188,20 @@ class API_Data:
         engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}")
         engine.connect()
         print("Sending data to RDS.....Be Patient...")
-        df = pd.DataFrame(datapoint)  
+        df = pd.DataFrame(datapoint) 
         # datapoint is inherited from retriever method above
-        # datagain = pd.DataFrame(df, columns=df.keys())
+
         # datagain.drop(['platform','tags','slug'],axis=1,inplace=True)
         df['platform'] = df['platform'].astype(str)
-        df['tags'] = df['tags'].astype(str)  
+        df['tags'] = df['tags'].astype(str)
         # converts the dtype of column to string to prevent error while sending
-        df['quote'] = df['quote'].astype(str)       
+        df['quote'] = df['quote'].astype(str)  
         df.to_sql('crypto', engine, if_exists='replace')
         print("---Successfully Sent---")
-        print(f"Recursive Fibonacci\t ---{(time.time() - start_time):.08f} seconds ---")
+        print(f"Sent in ---{(time.time() - start_time):.08f} seconds ---")
 
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
     API_Data().retriever()
     API_Data().image_retriever()
     API_Data().upload_to_s3()

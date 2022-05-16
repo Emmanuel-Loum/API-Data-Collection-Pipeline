@@ -15,9 +15,9 @@ setuptools.setup(
     description="Data Collection package",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/Emmanuel-Loum/Computer-Vision-Rock-Paper-Scissors",
+    url="https://github.com/Emmanuel-Loum/API-Data-Collection-Pipeline",
     project_urls={
-        "Bug Tracker": "https://github.com/Emmanuel-Loum/Computer-Vision-Rock-Paper-Scissors/Documentation",
+        "Bug Tracker": "https://github.com/Emmanuel-Loum/Computer-Vision-Rock-Paper-Scissors/README",
     },
     classifiers=[
         "Programming Language :: Python :: 3",
