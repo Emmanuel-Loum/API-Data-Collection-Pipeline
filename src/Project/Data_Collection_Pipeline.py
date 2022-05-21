@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from collections import defaultdict
 from urllib.request import urlretrieve
 from tqdm import tqdm
+from sqlalchemy import create_engine
 
 load_dotenv()
 
@@ -21,11 +22,15 @@ class API_Data:
         self.api_key = os.getenv('API_KEY')
         self.access_key = os.getenv('AWS_ACCESS_KEY_ID')
         self.secret_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+        self.user = os.getenv('user')
+        self.password = os.getenv('password')
         self.url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest"
         self.parameters = {'start': '1', 'limit': '5000', 'convert': 'USD'}
         self.headers = {'Accepts': 'application/json',
                         'X-CMC_PRO_API_KEY': self.api_key}
         self.session = Session()
+        self.bucket = os.getenv('Bucket')
+        self.endpoint = os.getenv('endpoint')
         global datapoint
 
     def retriever(self):
@@ -37,8 +42,10 @@ class API_Data:
         if os.path.isdir('raw_data'):
             pass
         else:
-            os.makedirs('raw_data')   
+            os.makedirs('raw_data')  
+
         start_time = time.time()
+        
         self.session.headers.update(self.headers)
 
         try:
@@ -79,7 +86,7 @@ class API_Data:
 
             print(e)
         # To measure time complexity 
-        print(f"Retrieved data in --- {(time.time()- start_time):.08f} seconds ---")
+        print(f"Retrieved data .......... {(time.time()- start_time):.01f} seconds")
 
     def image_retriever(self):
 
@@ -142,22 +149,20 @@ class API_Data:
             urlretrieve(url, fdr+os.path.basename(url))
             num += 1  # counts the number of images being downloaded
         # To measure time compleity 
-        print(f"Image downloaded in --- {(time.time() - start_time):.08f} seconds-")
-        print(num)
+        print(f"{num} images downloaded ..........{(time.time() - start_time):.01f} seconds")
 
     def upload_to_s3(self):
         '''
         Method to upload data to aws s3 for storage
         '''
-        boto3.Session(
-        aws_access_key_id= self.access_key,
-        aws_secret_access_key  = self.secret_key) # AWS credentials
+        boto3.Session(aws_access_key_id = input('Enter AWS Access Key Id: '), # self.access_key,
+        aws_secret_access_key = input('Enter AWS Secret Access Key: ')) # self.secret_key) # AWS credentials
         start_time = time.time()
         s3_client = boto3.client('s3')
         s3 = boto3.resource('s3')
-        #path_dir = "/raw_data/"
+        # path_dir = "/raw_data/"
         path_dir = f"{os.getcwd()}/"
-        bucket_name = "forthbucket"  
+        bucket_name = input('Enter AWS S3 Bucket name: ') # self.bucket
         s3_client.put_object(Bucket=bucket_name, Key=(f"{uniqueid}/"))
         os.chdir(f"{path_dir}/")
         print('uploading data...')
@@ -170,19 +175,19 @@ class API_Data:
         for i in os.listdir(images):  # sends every image to s3
             os.chdir(images)
             s3.Bucket(bucket_name).upload_file(f'{i}', f"{uniqueid}/Images/{i}")
-        print(f"Uploaded in ---{(time.time() - start_time):.08f} seconds ---")
+        print(f"Uploaded ..........{(time.time() - start_time):.01f} seconds ")
 
     def send_tabular(self):
         '''
         method that sends data to postgres database using AWS RDS
         '''
         start_time = time.time()
-        from sqlalchemy import create_engine
+
         DATABASE_TYPE = 'postgresql'
         DBAPI = 'psycopg2'
-        ENDPOINT = 'database-1.c3v3xzshpy9w.us-east-1.rds.amazonaws.com' 
-        USER = 'postgres'
-        PASSWORD = 'postgres'
+        ENDPOINT = self.endpoint 
+        USER = self.user
+        PASSWORD = self.password
         PORT = 5432
         DATABASE = 'postgres'
         engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}")
@@ -197,8 +202,7 @@ class API_Data:
         # converts the dtype of column to string to prevent error while sending
         df['quote'] = df['quote'].astype(str)  
         df.to_sql('crypto', engine, if_exists='replace')
-        print("---Successfully Sent---")
-        print(f"Sent in ---{(time.time() - start_time):.08f} seconds ---")
+        print(f"Successfully Sent ..........{(time.time() - start_time):.08f} seconds")
 
 
 if __name__ == '__main__':
