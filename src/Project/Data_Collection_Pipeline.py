@@ -86,7 +86,7 @@ class API_Data:
 
             print(e)
         # To measure time complexity 
-        print(f"Retrieved data .......... {(time.time()- start_time):.01f} seconds")
+        print(f"Retrieved data .......... {(time.time()- start_time):.01f}s")
 
     def image_retriever(self):
 
@@ -149,20 +149,20 @@ class API_Data:
             urlretrieve(url, fdr+os.path.basename(url))
             num += 1  # counts the number of images being downloaded
         # To measure time compleity 
-        print(f"{num} images downloaded ..........{(time.time() - start_time):.01f} seconds")
+        print(f"{num} images downloaded ..........{(time.time() - start_time):.01f}s")
 
     def upload_to_s3(self):
         '''
         Method to upload data to aws s3 for storage
         '''
-        boto3.Session(aws_access_key_id = input('Enter AWS Access Key Id: '), # self.access_key,
-        aws_secret_access_key = input('Enter AWS Secret Access Key: ')) # self.secret_key) # AWS credentials
+        boto3.Session(aws_access_key_id = self.access_key,
+        aws_secret_access_key = self.secret_key) # AWS credentials
         start_time = time.time()
         s3_client = boto3.client('s3')
         s3 = boto3.resource('s3')
         # path_dir = "/raw_data/"
         path_dir = f"{os.getcwd()}/"
-        bucket_name = input('Enter AWS S3 Bucket name: ') # self.bucket
+        bucket_name = self.bucket
         s3_client.put_object(Bucket=bucket_name, Key=(f"{uniqueid}/"))
         os.chdir(f"{path_dir}/")
         print('uploading data...')
@@ -175,7 +175,7 @@ class API_Data:
         for i in os.listdir(images):  # sends every image to s3
             os.chdir(images)
             s3.Bucket(bucket_name).upload_file(f'{i}', f"{uniqueid}/Images/{i}")
-        print(f"Uploaded ..........{(time.time() - start_time):.01f} seconds ")
+        print(f"Uploaded ..........{(time.time() - start_time):.01f}s")
 
     def send_tabular(self):
         '''
@@ -202,7 +202,7 @@ class API_Data:
         # converts the dtype of column to string to prevent error while sending
         df['quote'] = df['quote'].astype(str)  
         df.to_sql('crypto', engine, if_exists='replace')
-        print(f"Successfully Sent ..........{(time.time() - start_time):.08f} seconds")
+        print(f"Successfully Sent ..........{(time.time() - start_time):.01f}s")
 
 
 if __name__ == '__main__':
