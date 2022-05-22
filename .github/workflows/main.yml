@@ -35,5 +35,5 @@ jobs:
             context: .
             file: ./Dockerfile
             push: true
-            tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pipeline6:v2
+            tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pipeline6:latest
 
