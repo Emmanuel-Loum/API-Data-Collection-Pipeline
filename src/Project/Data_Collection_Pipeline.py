@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from collections import defaultdict
 from urllib.request import urlretrieve
 from tqdm import tqdm
+import psycopg2
 from sqlalchemy import create_engine
 
 load_dotenv()
