@@ -24,7 +24,7 @@ class API_Data:
         self.access_key = os.getenv('INPUT_AWS_ACCESS_KEY_ID')
         self.secret_key = os.getenv('INPUT_AWS_SECRET_ACCESS_KEY')
         self.user = os.getenv('INPUT_USER')
-        self.password = os.getenv('PASSWORD')
+        self.password = os.getenv('INPUT_PASSWORD')
         self.url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest"
         self.parameters = {'start': '1', 'limit': '5000', 'convert': 'USD'}
         self.headers = {'Accepts': 'application/json',
