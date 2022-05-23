@@ -28,17 +28,17 @@ jobs:
         -
           name: Set up Docker Buildx
           uses: docker/setup-buildx-action@v1
+       
+        - 
+          name: Make envfile
+          uses: SpicyPizza/create-envfile@v1
+          with:
+            ENV_SECRET: ${{ secrets.ENV_SECRET }}
+            file_name: .env
+         
         -
           name: Build and push
           uses: docker/build-push-action@v2
-          env:
-            API_KEY: ${{ secrets.API_KEY }}
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID  }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            BUCKET: ${{ secrets.BUCKET }}
-            ENDPOINT: ${{ secrets.ENDPOINT }}
-            USER: ${{ secrets.USER }}
-            PASSWORD: ${{ secrets.PASSWORD }}
           with:
             context: .
             file: ./Dockerfile
