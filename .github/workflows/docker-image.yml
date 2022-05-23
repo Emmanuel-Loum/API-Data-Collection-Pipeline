@@ -33,7 +33,6 @@ jobs:
           name: Make envfile
           uses: SpicyPizza/create-envfile@v1
           with:
-            DEBUG: false
             ENV_SECRET: ${{ secrets.ENV_SECRET }}
             file_name: .env
          
