@@ -32,7 +32,7 @@ jobs:
           name: Build and push
           uses: docker/build-push-action@v2
           env:
-            name: pipeline
+            ENV_SECRET: ${{ secrets.ENV_SECRET }}
           with:
             context: .
             file: ./Dockerfile
