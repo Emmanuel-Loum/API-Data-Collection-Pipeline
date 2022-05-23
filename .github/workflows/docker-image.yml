@@ -39,6 +39,7 @@ jobs:
             env_key_BUCKET: ${{ secrets.BUCKET }}
             env_key_PASSWORD: ${{ secrets.PASSWORD }}
             env_key_ENDPOINT: ${{ secrets.ENDPOINT }}
+            directory: Project
             file_name: .env
             fail_on_empty: false
          
