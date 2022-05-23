@@ -20,17 +20,17 @@ class API_Data:
     dir = os.getcwd()
 
     def __init__(self):
-        self.api_key = os.getenv('API_KEY')
-        self.access_key = os.getenv('AWS_ACCESS_KEY_ID')
-        self.secret_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-        self.password = os.getenv('password')
+        self.api_key = os.getenv('INPUT_API_KEY')
+        self.access_key = os.getenv('INPUT_AWS_ACCESS_KEY_ID')
+        self.secret_key = os.getenv('INPUT_AWS_SECRET_ACCESS_KEY')
+        self.password = os.getenv('INPUT_password')
         self.url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest"
         self.parameters = {'start': '1', 'limit': '5000', 'convert': 'USD'}
         self.headers = {'Accepts': 'application/json',
                         'X-CMC_PRO_API_KEY': self.api_key}
         self.session = Session()
-        self.bucket = os.getenv('bucket')
-        self.endpoint = os.getenv('endpoint')
+        self.bucket = os.getenv('INPUT_bucket')
+        self.endpoint = os.getenv('INPUT_endpoint')
         global datapoint
 
     def retriever(self):
