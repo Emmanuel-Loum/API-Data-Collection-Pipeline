@@ -192,7 +192,7 @@ class API_Data:
         DATABASE = 'postgres'
         engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}")
         engine.connect()
-        print("Sending data to RDS.....Be Patient...")
+        print("Sending data to RDS.....wait.............")
         df = pd.DataFrame(datapoint) 
         # datapoint is inherited from retriever method above
 
