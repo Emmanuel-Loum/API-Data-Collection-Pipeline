@@ -1,6 +1,8 @@
 # API DATA COLLECTION PIPELINE
 ____
 
+![UML Diagram](UML.png)
+
 ## Milestone 1
 
 Collects json data from [CoinMarketCap](https://coinmarketcap.com/api/API)   website 
