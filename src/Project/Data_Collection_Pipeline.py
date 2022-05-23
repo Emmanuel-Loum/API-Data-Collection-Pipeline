@@ -23,15 +23,14 @@ class API_Data:
         self.api_key = os.getenv('API_KEY')
         self.access_key = os.getenv('AWS_ACCESS_KEY_ID')
         self.secret_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-        self.user = os.getenv('USER')
-        self.password = os.getenv('PASSWORD')
+        self.password = os.getenv('password')
         self.url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest"
         self.parameters = {'start': '1', 'limit': '5000', 'convert': 'USD'}
         self.headers = {'Accepts': 'application/json',
                         'X-CMC_PRO_API_KEY': self.api_key}
         self.session = Session()
-        self.bucket = os.getenv('BUCKET')
-        self.endpoint = os.getenv('ENDPOINT')
+        self.bucket = os.getenv('bucket')
+        self.endpoint = os.getenv('endpoint')
         global datapoint
 
     def retriever(self):
@@ -109,7 +108,7 @@ class API_Data:
         '''
         Uses different API url to request images
         '''
-        url = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/info"
+        url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/info"
         parameters = {
             "id": k
             # "slug":"ethereum"
@@ -187,7 +186,7 @@ class API_Data:
         DATABASE_TYPE = 'postgresql'
         DBAPI = 'psycopg2'
         ENDPOINT = self.endpoint 
-        USER = self.user
+        USER ='postgres' 
         PASSWORD = self.password
         PORT = 5432
         DATABASE = 'postgres'
