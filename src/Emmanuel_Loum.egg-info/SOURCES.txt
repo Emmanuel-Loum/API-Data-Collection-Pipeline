@@ -1,0 +1,10 @@
+LICENSE
+README.md
+setup.py
+src/Emmanuel_Loum.egg-info/PKG-INFO
+src/Emmanuel_Loum.egg-info/SOURCES.txt
+src/Emmanuel_Loum.egg-info/dependency_links.txt
+src/Emmanuel_Loum.egg-info/top_level.txt
+src/Project/Data_Collection_Pipeline.py
+src/Project/__init__.py
+test/test_ApiData.py

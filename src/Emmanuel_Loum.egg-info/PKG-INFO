@@ -1,0 +1,21 @@
+Metadata-Version: 2.1
+Name: Emmanuel-Loum
+Version: 0.0.1
+Summary: Data Collection package
+Home-page: https://github.com/Emmanuel-Loum/API-Data-Collection-Pipeline
+Author: Emmanuel
+Author-email: oryemaprince62@gmail.com
+Project-URL: Bug Tracker, https://github.com/Emmanuel-Loum/Computer-Vision-Rock-Paper-Scissors/README
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: CC0 1.0 Universal
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# API-Data-Collection-Pipeline
+_________
+
+This is a simple example package. You can use
+[Github-flavored Markdown](https://guides.github.com/features/mastering-markdown/)
+to write your content.
