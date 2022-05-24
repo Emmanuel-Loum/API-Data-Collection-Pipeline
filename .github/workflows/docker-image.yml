@@ -33,7 +33,7 @@ jobs:
           name: Make envfile
           uses: SpicyPizza/create-envfile@v1
           with:
-            envkey_API_KEY: ${{ secrets.ENV_SECRET }}
+            envkey_API_KEY: ${{ secrets.API_KEY }}
             envkey_AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
             envkey_AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             env_key_BUCKET: ${{ secrets.BUCKET }}
