@@ -36,9 +36,9 @@ jobs:
             envkey_API_KEY: ${{ secrets.API_KEY }}
             envkey_AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
             envkey_AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            env_key_BUCKET: ${{ secrets.BUCKET }}
-            env_key_PASSWORD: ${{ secrets.PASSWORD }}
-            env_key_ENDPOINT: ${{ secrets.ENDPOINT }}
+            env_key_S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+            env_key_PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+            env_key_RDS_ENDPOINT: ${{ secrets.RDS_ENDPOINT }}
             directory: src/Project/
             file_name: .env
             fail_on_empty: false
