@@ -37,7 +37,7 @@ class API_Data:
 
         '''
         Method that makes an api call to a website and extracts data
-        and stores in a folder that it creates
+        and stores in a folder that it creates.
         '''
         if os.path.isdir('raw_data'):
             pass
