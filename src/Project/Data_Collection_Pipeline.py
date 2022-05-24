@@ -162,7 +162,7 @@ class API_Data:
         s3 = boto3.resource('s3')
         # path_dir = "/raw_data/"
         path_dir = f"{os.getcwd()}/"
-        bucket_name ='bucketseal'
+        bucket_name =self.bucket
         s3_client.put_object(Bucket=bucket_name, Key=(f"{uniqueid}/"))
         os.chdir(f"{path_dir}/")
         print('uploading data...')
