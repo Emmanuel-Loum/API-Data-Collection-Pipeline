@@ -23,9 +23,9 @@ class API_Data:
         self.api_key = os.getenv('API_KEY')
         self.access_key = os.getenv('AWS_ACCESS_KEY_ID')
         self.secret_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-        self.password = os.getenv('PASSWORD')
-        self.bucket = os.getenv('BUCKET')
-        self.endpoint = os.getenv('ENDPOINT')
+        self.password = os.getenv('PG_PASSWORD')
+        self.bucket = os.getenv('S3_BUCKET_NAME')
+        self.endpoint = os.getenv('RDS_ENDPOINT')
         self.url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest"
         self.parameters = {'start': '1', 'limit': '5000', 'convert': 'USD'}
         self.headers = {'Accepts': 'application/json',
